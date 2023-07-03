@@ -1,0 +1,15 @@
+// Required
+@import "~bootstrap/scss/functions";
+@import "./helpers/variables";
+@import "~bootstrap/scss/mixins";
+
+@import "~bootstrap/scss/bootstrap";
+
+@import './helpers/sweet_variablss.scss';
+
+// $swal2-background: #990000;
+
+@import '~sweetalert2/src/sweetalert2';
+.swal2-popup {
+  width: auto;
+}
