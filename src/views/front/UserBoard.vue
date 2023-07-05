@@ -30,4 +30,7 @@ export default {
   .navbar{
     position: static;
   }
+  .footer{
+    margin-top: 150px;
+  }
 </style>

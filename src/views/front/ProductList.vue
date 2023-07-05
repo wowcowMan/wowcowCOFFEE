@@ -21,8 +21,7 @@
       <Sidebar class="d-none d-md-block col-md-3"></Sidebar>
       <div class="products-list col-12 col-md-9 ps-md-4">
         <product-card v-for="item in productsCategory[currentPage-1]" :key="item.id"
-        :productsArr="item" :status="status" :favoriteIdList="favoriteIdList"
-        @addCart="addCart" @update-favorite="updateFavorite"></product-card>
+        :product="item"></product-card>
       </div>
     </div>
     <Pagination class="mt-5" :pages="totalPage" @emit-pages="changePage" @emit-prevnext="prevNext"></Pagination>
@@ -55,6 +54,10 @@ export default {
       const productList = []
       if (this.$route.params.category === 'all') {
         filterProducts = this.products
+      } else if (this.$route.params.category === 'sale') {
+        filterProducts = this.products.filter((item) => {
+          return item.price !== item.origin_price
+        })
       } else {
         filterProducts = this.products.filter((item) => {
           return item.category.includes(this.$route.params.category)

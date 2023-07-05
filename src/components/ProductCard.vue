@@ -1,46 +1,78 @@
 <template>
   <div class="product-card"
-    :class="{ light: productsArr.category.match('淺焙'), medium: productsArr.category.match('中焙'), dark: productsArr.category.match('深焙') }"
-    @click="getProduct(productsArr.id)">
-    <div class="pic" :style="{ backgroundImage: `url(${productsArr.imageUrl}` }">
+    :class="{ light: product.category.match('淺焙'), medium: product.category.match('中焙'), dark: product.category.match('深焙'), sale: product.price!==product.origin_price }"
+    @click="getProduct(product.id)">
+    <div class="pic" :style="{ backgroundImage: `url(${product.imageUrl}` }">
     </div>
     <div class="txt">
-      <p>{{ productsArr.title }}</p>
-      <p class="price">NT${{ productsArr.price }}</p>
+      <p>{{ product.title }}</p>
+      <p class="price">NT${{ product.price }}</p>
     </div>
     <div class="btn-group">
-      <button type="button" class="btn btn-outline-light me-2" :disabled="status.loadingItem === productsArr.id"
-        @click.stop="$emit('addCart',productsArr.id, productsArr.title)">
+      <button type="button" class="btn btn-outline-light me-2" :disabled="status.loadingItem === product.id"
+        @click.stop="addCart(product.id, product.title)">
         <i class="fa-solid fa-cart-shopping"></i>
-        <div v-if="status.loadingItem === productsArr.id" class="spinner-border text-secondary spinner-border-sm"
+        <div v-if="status.loadingItem === product.id" class="spinner-border text-secondary spinner-border-sm"
           role="status">
           <span class="visually-hidden">Loading...</span>
         </div>
       </button>
-      <button type="button" class="btn btn-outline-light" :disabled="status.loadingItem === productsArr.id"
-              :class="{'btn-light':favoriteIdList.includes(productsArr.id)}"
-              @click.stop="updateFavorite(productsArr.id)">
-        <i v-if="!favoriteIdList.includes(productsArr.id)" class="fa-regular fa-heart"></i>
-        <i v-if="favoriteIdList.includes(productsArr.id)" class="fa-solid fa-heart text-warning"></i>
+      <button type="button" class="btn btn-outline-light" :disabled="status.loadingItem === product.id"
+        :class="{ 'btn-light': favoriteIdList.includes(product.id) }" @click.stop="updateFavorite(product.id)">
+        <i v-if="!favoriteIdList.includes(product.id)" class="fa-regular fa-heart"></i>
+        <i v-if="favoriteIdList.includes(product.id)" class="fa-solid fa-heart text-warning"></i>
       </button>
     </div>
   </div>
 </template>
 
 <script>
+import handelFavorites from '@/methods/favorite'
 export default {
+  props: ['product'],
   data() {
     return {
-      a: 123
+      status: {
+        loadingItem: '' // 對應品項 id
+      },
+      favoriteIdList: handelFavorites.storeFavorite()
     }
   },
-  props: ['productsArr', 'status', 'favoriteIdList'],
   methods: {
     getProduct(id) {
+      this.saveViewed(id)
       this.$router.push(`/user/product/${id}`)
     },
+    addCart(id, title) {
+      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`
+      this.status.loadingItem = id
+      const cart = {
+        product_id: id,
+        qty: 1
+      }
+      this.$http.post(url, { data: cart })
+        .then((res) => {
+          this.status.loadingItem = ''
+          this.$swal({
+            icon: 'success',
+            text: title,
+            title: '以成功加入購物車'
+          })
+        })
+    },
     updateFavorite(id) {
-      this.$emit('update-favorite', id)
+      handelFavorites.toggleFavorite(id)
+      this.favoriteIdList = handelFavorites.storeFavorite()
+    },
+    saveViewed(id) {
+      const viewedArray = localStorage.getItem('viewed') ? JSON.parse(localStorage.getItem('viewed')) : []
+      if (!viewedArray.includes(id)) {
+        viewedArray.unshift(id)
+      }
+      if (viewedArray.length > 5) {
+        viewedArray.pop()
+      }
+      localStorage.setItem('viewed', JSON.stringify(viewedArray))
     }
   }
 }
@@ -50,12 +82,11 @@ export default {
 $light_roast: #FFD74A;
 $medium_roast: #92D053;
 $dark_roast: #E13636;
+
 .product-card {
   position: relative;
   cursor: pointer;
   box-shadow: 2px 2px 3px rgba(0, 0, 0, .2);
-
-  // height: 100%;
   .pic {
     position: relative;
     width: 100%;
@@ -82,7 +113,6 @@ $dark_roast: #E13636;
     padding: 0.2rem 0;
 
     p {
-      // border: 1px solid red;
       height: 3.4rem;
       font-size: 15px;
       margin: 0;
@@ -101,7 +131,6 @@ $dark_roast: #E13636;
   }
 
   .btn-group {
-    // border: 1px solid red;
     position: absolute;
     bottom: 5.5rem;
     left: 0.5rem;
@@ -163,6 +192,17 @@ $dark_roast: #E13636;
 
   &:after {
     background-image: linear-gradient(45deg, $dark_roast 50%, rgba(0, 0, 0, 0) 50%);
+  }
+}
+.sale .pic{
+  &::before{
+    content: 'sale';
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: .25rem;
+    background: #e31d1d;
+    color: #fff;
   }
 }
 </style>

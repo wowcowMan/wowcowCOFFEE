@@ -3,25 +3,17 @@
     clickable: true,
   }" :modules="modules" class="mySwiper">
     <slot></slot>
-    <swiper-slide v-if="false" class="more"><a href="#"></a></swiper-slide>
   </swiper>
 </template>
 <script>
-// Import Swiper Vue.js components
-import { Swiper, SwiperSlide } from 'swiper/vue'
-
-// Import Swiper styles
+import { Swiper } from 'swiper/vue'
 import 'swiper/scss'
-// import 'swiper/scss/navigation'
 import '../assets/swiper-nav.scss'
-
-// import required modules
 import { Mousewheel, Navigation } from 'swiper'
 
 export default {
   components: {
-    Swiper,
-    SwiperSlide
+    Swiper
   },
   setup() {
     return {
@@ -32,10 +24,8 @@ export default {
 </script>
 
 <style lang="scss">
-// @import "../assets/produc-card.scss";
 .swiper {
   position: relative;
-  // border: 1px solid red;
   width: 100%;
   padding: 1.5rem;
 
@@ -44,7 +34,6 @@ export default {
   }
 
   .more {
-    // border: 1px solid red;
     font-size: 18px;
     background: #fff;
     display: flex;

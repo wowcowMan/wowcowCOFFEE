@@ -21,6 +21,7 @@ export default {
         this.isLoading = false
         if (this.cart.carts.length === 0) {
           this.cart = {}
+          return
         }
         for (let i = 0; i < this.cart.carts.length; i++) {
           this.cart.carts[i].final_total = Math.trunc(this.cart.carts[i].final_total)

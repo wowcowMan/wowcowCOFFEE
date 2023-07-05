@@ -55,6 +55,9 @@
             <li class="nav-item my-0 my-lg-2" @click="closeNav">
               <router-link class="nav-link" to="/user/productlist/配方豆?page=1">配方豆</router-link>
             </li>
+            <li class="nav-item my-0 my-lg-2" @click="closeNav">
+              <router-link class="nav-link" to="/user/productlist/sale?page=1">特價專區</router-link>
+            </li>
             <li class="nav-item my-0 my-lg-2 mb-3" @click="closeNav">
               <router-link class="nav-link" to="/user/productlist/選物?page=1">哇靠選物</router-link>
             </li>

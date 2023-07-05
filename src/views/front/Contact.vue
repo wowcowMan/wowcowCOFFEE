@@ -1,7 +1,7 @@
 <template>
   <Header></Header>
-  <div class="container mt-5">
-    <div class="col-6 mx-auto">
+  <div class="contact p-5">
+    <div class="col-10 col-md-5 mx-auto">
       <Form name="submit-to-google-sheet" v-slot="{ errors }" @submit="this.$refs.msgModal.showModal()">
         <div class="mb-3">
           <label for="name" class="form-label">名字*</label>
@@ -21,7 +21,7 @@
           </Field>
           <ErrorMessage name="message" class="invalid-feedback"></ErrorMessage>
         </div>
-        <button class="btn btn-dark d-block ms-auto">SUBMIT</button>
+        <button class="btn btn-dark d-block">提交</button>
       </Form>
     </div>
   </div>
@@ -52,6 +52,12 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.contact{
+  background-image: linear-gradient(120deg, rgba(255, 255, 255, .9) 40%, rgba(225, 225, 225, .5) 100%),
+  url('https://images.unsplash.com/photo-1576758597367-2840b9dc1a2b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2670&q=80');
+  background-position: bottom bottom;
+  background-size: cover;
+}
 form {
   label {
     font-size: 16px;
@@ -63,7 +69,8 @@ form {
     height: 40px;
     border: none;
     border-radius: 0;
-    background: #d9d9d9;
+    background: #fff;
+    box-shadow: 1px 1px 4px rgba($color: #000000, $alpha: 0.3);
     padding: 5px;
   }
 

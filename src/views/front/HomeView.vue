@@ -2,7 +2,7 @@
   <div class="home">
     <Header ref="header"></Header>
     <!-- banner -->
-    <div class="container-fluid banner p-0 mt-3 mb-5">
+    <div class="container-fluid banner p-0 mt-0 mb-5">
       <div id="myCarousel" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-indicators">
           <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active" aria-current="true"
@@ -12,35 +12,29 @@
         </div>
         <div class="carousel-inner">
           <div class="carousel-item active">
-            <img src="https://picsum.photos/300/200/?random=1" class="d-block w-100" alt="banner">
-            <div class="carousel-caption d-none d-md-block">
-              <h5>First slide label</h5>
-              <p>Some representative placeholder content for the first slide.</p>
+            <img src="https://images.unsplash.com/photo-1439242088854-0c76045f4124?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2670&q=80" class="d-block w-100" alt="banner">
+            <div class="carousel-caption">
+              <h5>wowcow<br>精品咖啡</h5>
+              <p>以覺得好喝的咖啡，就是好咖啡</p>
             </div>
           </div>
           <div class="carousel-item">
-            <img src="https://picsum.photos/300/200/?random=2" class="d-block w-100" alt="banner">
-            <div class="carousel-caption d-none d-md-block">
-              <h5>Second slide label</h5>
-              <p>Some representative placeholder content for the second slide.</p>
+            <img src="https://images.unsplash.com/photo-1535246785412-526b774dd1ef?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTU0fHxjb2ZmZWV8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60" class="d-block w-100" alt="banner">
+            <div class="carousel-caption">
+              <h5>優惠活動</h5>
+              <p>即日起結帳時輸入xxx即享95折優惠</p>
             </div>
           </div>
           <div class="carousel-item">
-            <img src="https://picsum.photos/300/200/?random=3" class="d-block w-100" alt="banner">
-            <div class="carousel-caption d-none d-md-block">
-              <h5>Third slide label</h5>
-              <p>Some representative placeholder content for the third slide.</p>
+            <img
+              src="https://images.unsplash.com/photo-1517668808822-9ebb02f2a0e6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2676&q=80"
+              class="d-block w-100" alt="banner">
+            <div class="carousel-caption">
+              <h5>SALE</h5>
+              <p>限量好豆特賣，要搶要快</p>
             </div>
           </div>
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
       </div>
     </div>
 
@@ -71,7 +65,7 @@
     <!-- 產區介紹 -->
     <div class="areas-container p-0 mb-5">
       <p class="text-center w-75 fw-bold mx-auto mb-5">
-        在這個咖啡之旅中，我們不只是尋找最好的咖啡豆，更是探索每個產地、每個農民的故事。我們與全球咖啡種植者建立了長期合作關係，確保他們的辛勤耕耘和專業知識在每一杯咖啡中得以體現。</p>
+        我們不只是尋找最好的咖啡豆，更是探索每個產地、每個農民的故事。我們與全球咖啡種植者建立了長期合作關係，確保他們的辛勤耕耘和專業知識在每一杯咖啡中得以體現。</p>
       <div class="areas-wrap mb-3" ref="areasWrap">
         <div v-for="(area, key) in areaData" :key="key" class="area-item d-block d-md-flex"
           :class="{ 'flex-row-reverse': area.name === '中南美洲' }">
@@ -81,14 +75,13 @@
             <p class="continent-info col p-3 bg-light fs-6">{{ area.info }}</p>
           </div>
           <div class="product col col-md-6 p-0 p-md-3 bg-white">
-            <areas-swiper>
+            <card-swiper>
               <swiper-slide v-for="(item) in area.computedPd" :key="item.id">
-                <product-card :productsArr="item" :status="status" :favoriteIdList="favoriteIdList" @addCart="addCart"
-                  @update-favorite="updateFavorite"></product-card>
+                <product-card :product="item"></product-card>
               </swiper-slide>
               <swiper-slide class="more"><router-link
                   :to="`/user/productlist/${area.name}?page=1`">查看更多...</router-link></swiper-slide>
-            </areas-swiper>
+            </card-swiper>
           </div>
         </div>
       </div>
@@ -124,8 +117,8 @@
           </div>
           <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
             <div class="accordion-body my-3 p-4">
-              <p class="m-0">咖啡粉的粗細，對沖煮結果有極大的影響，粗細度可以很直接的調整咖啡的酸甜，在適當的萃取率中，粉越粗越酸反之越甜。
-                <br>所以相當建議在調整參數時，與其調整濾杯、水溫、粉水比等，不如先試著調整咖啡粉的粗細，可以最快速的達到其目的。
+              <p class="m-0">
+                咖啡粉的粗細，對沖煮結果有極大的影響，粗細度可以很直接的調整咖啡的酸甜，在適當的萃取率中，粉越粗越酸反之越甜。所以相當建議在調整參數時，與其調整濾杯、水溫、粉水比等，不如先試著調整咖啡粉的粗細，可以最快速的達到其目的。
               </p>
             </div>
           </div>
@@ -155,7 +148,7 @@
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
 import Carousel from 'bootstrap/js/dist/carousel'
-import AreasSwiper from '@/components/AreasSwiper.vue'
+import CardSwiper from '@/components/CardSwiper.vue'
 import { SwiperSlide } from 'swiper/vue'
 import ProductCard from '@/components/ProductCard.vue'
 import { computed } from 'vue'
@@ -164,7 +157,7 @@ import productsMixin from '@/mixins/productsMixin'
 export default {
   name: 'HomeView',
   components: {
-    Header, Footer, AreasSwiper, SwiperSlide, ProductCard
+    Header, Footer, CardSwiper, SwiperSlide, ProductCard
   },
   mixins: [productsMixin],
   data() {
@@ -174,7 +167,7 @@ export default {
           name: '非洲',
           info: '非洲產區擁有多個優質的咖啡產區。風味通常具有明亮的酸度和清新的口感，並帶有豐富的水果風味。衣索比亞的咖啡具有花香和柑橘風味，肯亞的咖啡則以複雜的莓果風味著稱。',
           computedPd: computed(() => {
-            return this.products.filter((item) => {
+            return this.products.reverse().filter((item) => {
               return item.category.includes('非洲')
             }).slice(0, 3)
           })
@@ -237,6 +230,18 @@ export default {
       width: 100%;
       height: 100%;
       object-fit: cover;
+    }
+  }
+
+  .carousel-caption {
+    // top: 50%;
+    // transform: translateY(-50%);
+    // bottom: 0;
+    h5{
+      font-size: 3rem;
+    }
+    p{
+      font-size: 1rem;
     }
   }
 
@@ -461,12 +466,14 @@ export default {
       height: 100%;
     }
   }
-  .accordion-button{
+
+  .accordion-button {
     &:focus {
       box-shadow: none;
       outline: none;
     }
   }
+
   .accordion-button.collapsed {
     position: relative;
 
@@ -506,4 +513,7 @@ export default {
     }
   }
 }
-</style>
+
+.footer {
+  margin-top: 150px;
+}</style>

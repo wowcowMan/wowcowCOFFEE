@@ -32,6 +32,7 @@
         </div>
       </li>
       <li class="list-group-item p-3"><router-link to="/user/productlist/配方豆?page=1">配方豆</router-link></li>
+      <li class="list-group-item p-3"><router-link to="/user/productlist/sale?page=1">特價專區</router-link></li>
       <li class="list-group-item p-3 mb-3"><router-link to="/user/productlist/選物?page=1">哇靠選物</router-link></li>
       <li class="list-group-item p-3"><router-link to="/policy">相關政策</router-link></li>
       <li class="list-group-item p-3"><router-link to="/contact">聯絡我們</router-link></li>

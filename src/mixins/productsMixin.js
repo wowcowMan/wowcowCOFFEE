@@ -1,13 +1,8 @@
-import handelFavorites from '@/methods/favorite'
 export default {
   data() {
     return {
       products: [],
-      isLoading: false,
-      status: {
-        loadingItem: '' // 對應品項 id
-      },
-      favoriteIdList: handelFavorites.storeFavorite()
+      isLoading: false
     }
   },
   methods: {
@@ -25,31 +20,6 @@ export default {
           })
         }
       })
-    },
-    // 商品詳訊資訊
-    getProduct(id) {
-      this.$router.push(`/user/product/${id}`)
-    },
-    addCart(id, title) {
-      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`
-      this.status.loadingItem = id
-      const cart = {
-        product_id: id,
-        qty: 1
-      }
-      this.$http.post(url, { data: cart })
-        .then((res) => {
-          this.status.loadingItem = ''
-          this.$swal({
-            icon: 'success',
-            text: title,
-            title: '以成功加入購物車'
-          })
-        })
-    },
-    updateFavorite(id) {
-      handelFavorites.toggleFavorite(id)
-      this.favoriteIdList = handelFavorites.storeFavorite()
     }
   },
   mounted() {

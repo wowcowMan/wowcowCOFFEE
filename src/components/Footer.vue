@@ -54,7 +54,7 @@
   color: #eee;
 }
 .footer {
-  margin-top: 150px;
+  // margin-top: 150px;
 }
 
 a {
