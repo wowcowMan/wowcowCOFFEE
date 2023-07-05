@@ -1,4 +1,5 @@
 <template>
+    <Loading :active="isLoading"></Loading>
   <div class="home">
     <Header ref="header"></Header>
     <!-- banner -->
@@ -76,7 +77,7 @@
           </div>
           <div class="product col col-md-6 p-0 p-md-3 bg-white">
             <card-swiper>
-              <swiper-slide v-for="(item) in area.computedPd" :key="item.id">
+              <swiper-slide v-for="(item) in area.products" :key="item.id">
                 <product-card :product="item"></product-card>
               </swiper-slide>
               <swiper-slide class="more"><router-link
@@ -144,57 +145,57 @@
 </template>
 
 <script>
-// @ is an alias to /src
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
 import Carousel from 'bootstrap/js/dist/carousel'
 import CardSwiper from '@/components/CardSwiper.vue'
 import { SwiperSlide } from 'swiper/vue'
 import ProductCard from '@/components/ProductCard.vue'
-import { computed } from 'vue'
-import productsMixin from '@/mixins/productsMixin'
 
 export default {
   name: 'HomeView',
   components: {
     Header, Footer, CardSwiper, SwiperSlide, ProductCard
   },
-  mixins: [productsMixin],
   data() {
     return {
       areaData: [
         {
           name: '非洲',
           info: '非洲產區擁有多個優質的咖啡產區。風味通常具有明亮的酸度和清新的口感，並帶有豐富的水果風味。衣索比亞的咖啡具有花香和柑橘風味，肯亞的咖啡則以複雜的莓果風味著稱。',
-          computedPd: computed(() => {
-            return this.products.reverse().filter((item) => {
-              return item.category.includes('非洲')
-            }).slice(0, 3)
-          })
+          products: []
         },
         {
           name: '中南美洲',
           info: '中南美洲的咖啡豆通常具有平衡的風味和濃郁的口感。哥斯達黎加的咖啡常帶有柔和的酸度和堅果風味，現今哥倫比亞有許多特殊處理法，其咖啡有豐富且濃烈的香氣，巴拿馬則以高品質的藝伎咖啡計聞名。',
-          computedPd: computed(() => {
-            return this.products.filter((item) => {
-              return item.category.includes('中南美洲')
-            }).slice(0, 3)
-          })
+          products: []
         },
         {
           name: '亞洲',
           info: '亞洲的咖啡產區包括印尼和越南等地。亞洲咖啡豆的風味特點較為多樣。常常具有濃郁的風味和重口感，並帶有香料和木質的風味。而台灣咖啡近年發展迅速，提供高品質且改善原本亞洲豆原本不討喜的風味，並有著花香、果香等風味。',
-          computedPd: computed(() => {
-            return this.products.filter((item) => {
-              return item.category.includes('亞洲')
-            }).slice(0, 3)
-          })
+          products: []
         }
       ],
+      isLoading: false,
       carousel: {}
     }
   },
   methods: {
+    getProducts() {
+      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/products/all`
+      this.isLoading = true
+      this.$http.get(url).then((response) => {
+        if (response.data.success) {
+          const data = response.data.products.reverse()
+          for (let i = 0; i < this.areaData.length; i++) {
+            this.areaData[i].products = data.filter((item) => {
+              return item.category.includes(this.areaData[i].name)
+            }).slice(0, 3)
+          }
+          this.isLoading = false
+        }
+      })
+    },
     handleScroll() {
       const scrollTop = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop
       this.$refs.header.navFixed()
@@ -204,6 +205,7 @@ export default {
     }
   },
   mounted() {
+    this.getProducts()
     window.addEventListener('scroll', this.handleScroll)
     const myCarousel = document.querySelector('#myCarousel')
     this.carousel = new Carousel(myCarousel)

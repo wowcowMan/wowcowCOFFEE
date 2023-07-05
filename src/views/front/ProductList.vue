@@ -32,16 +32,14 @@
 import Sidebar from '@/components/Sidebar.vue'
 import ProductCard from '@/components/ProductCard.vue'
 import Pagination from '@/components/Pagination.vue'
-import productsMixin from '@/mixins/productsMixin'
-
 export default {
   components: {
     Sidebar, ProductCard, Pagination
   },
-  mixins: [productsMixin],
   data() {
     return {
-      tempProducts: [],
+      products: [],
+      isLoading: false,
       pagination: {},
       num: 10, // 一頁顯示的商品數量
       sortList: '預設' // 排列條件
@@ -83,6 +81,20 @@ export default {
     }
   },
   methods: {
+    getProducts() {
+      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/products/all`
+      this.isLoading = true
+      this.$http.get(url).then((response) => {
+        this.isLoading = false
+        if (response.data.success) {
+          // 新增時間排序
+          this.products = response.data.products.map((obj, key) => {
+            obj.lasting = key
+            return obj
+          })
+        }
+      })
+    },
     changePage(page) {
       this.$router.push({ query: { page } })
     },
@@ -110,12 +122,14 @@ export default {
         })
       }
     }
+  },
+  mounted() {
+    this.getProducts()
   }
 }
 </script>
 
 <style scoped lang="scss">
-// @import "@/assets/produc-card.scss";
 .container-fluid {
   max-width: 1280px;
 }
