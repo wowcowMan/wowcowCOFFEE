@@ -11,6 +11,6 @@ export default {
     localStorage.setItem('favorite', str)
   },
   storeFavorite() {
-    return JSON.parse(localStorage.getItem('favorite'))
+    return JSON.parse(localStorage.getItem('favorite')) || []
   }
 }
