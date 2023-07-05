@@ -236,9 +236,6 @@ export default {
   }
 
   .carousel-caption {
-    // top: 50%;
-    // transform: translateY(-50%);
-    // bottom: 0;
     h5{
       font-size: 3rem;
     }
