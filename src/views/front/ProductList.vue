@@ -1,7 +1,6 @@
 <template>
   <Loading :active="isLoading"></Loading>
-
-  <div class="container-fluid mt-3 my-auto">
+  <div class="container-fluid mt-3 my-auto p-0">
     <div class="row justify-content-between align-items-center my-3">
       <div class="breadcrumb col-12 col-md-9 mb-2">
         <router-link class="me-2" to="/">首頁</router-link>/
@@ -20,8 +19,7 @@
     <div class="row justify-content-between align-items-start">
       <Sidebar class="d-none d-md-block col-md-3"></Sidebar>
       <div class="products-list col-12 col-md-9 ps-md-4">
-        <product-card v-for="item in productsCategory[currentPage-1]" :key="item.id"
-        :product="item"></product-card>
+        <product-card v-for="item in productsCategory[currentPage - 1]" :key="item.id" :product="item"></product-card>
       </div>
     </div>
     <Pagination class="mt-5" :pages="totalPage" @emit-pages="changePage" @emit-prevnext="prevNext"></Pagination>
@@ -42,7 +40,8 @@ export default {
       isLoading: false,
       pagination: {},
       num: 10, // 一頁顯示的商品數量
-      sortList: '預設' // 排列條件
+      sortList: '預設', // 排列條件,
+      toastList: []
     }
   },
   // 商品分類

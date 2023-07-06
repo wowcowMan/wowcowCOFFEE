@@ -68,16 +68,21 @@
             </div>
           </div>
         </div>
-        <!-- add to cart -->
+        <!-- 加入購物車、收藏 -->
         <div class="row px-2 mb-5">
           <div class="col-4 d-flex align-item-center justify-content-between border border-1 border-black rounded-1">
             <button type="button" class="btn border-0 btn-sm" @click.prevent="productNum--" :disabled="atLeast">-</button>
             <input v-model="productNum" type="numbet" class="p-1 border-0 col-6 text-center">
             <button type="button" class="btn btn-sm" @click.prevent="productNum++">+</button>
           </div>
-          <div class="col-6 col-md-8">
+          <div class="col-6 col-md-8 d-flex justify-content-between pe-0">
             <button type="button" class="btn btn-dark" @click="addToCart(product.id, product.title)">
               加到購物車
+            </button>
+            <button type="button" class="btn border-0 bg-white p-0 fs-5"
+            :class="{ 'btn-light': favoriteIdList.includes(product.id) }" @click.stop="updateFavorite(product.id)">
+              <i v-if="!favoriteIdList.includes(product.id)" class="fa-regular fa-heart"></i>
+              <i v-if="favoriteIdList.includes(product.id)" class="fa-solid fa-heart text-warning"></i>
             </button>
           </div>
           <span class="mt-3 p-0 text-secondary">* 代磨請備註沖煮器材</span>
@@ -145,7 +150,7 @@
       </div>
     </div>
     <hr>
-    <!-- viewed -->
+    <!-- 近期看過 -->
     <div class="container p-0 mt-5">
       <p class="text-center fs-3">近期看過</p>
       <div class="viewed-swiper">
@@ -163,6 +168,7 @@
 import ViewedSwiper from '@/components/ViewedSwiper.vue'
 import { SwiperSlide } from 'swiper/vue'
 import ProductCard from '@/components/ProductCard.vue'
+import handelFavorites from '@/methods/favorite'
 export default {
   components: {
     ViewedSwiper, SwiperSlide, ProductCard
@@ -189,7 +195,8 @@ export default {
       productNum: 1,
       atLeast: true,
       activeButton: 'description',
-      viewedList: []
+      viewedList: [],
+      favoriteIdList: handelFavorites.storeFavorite()
     }
   },
   watch: {
@@ -219,6 +226,7 @@ export default {
         this.isLoading = false
         if (response.data.success) {
           this.product = response.data.product
+          this.favoriteIdList = handelFavorites.storeFavorite()
           this.activePic = this.product.imageUrl
           if (this.product.category !== '選物') {
             this.infoContent = JSON.parse(this.product.content)
@@ -262,6 +270,11 @@ export default {
           })
         }
       })
+    },
+    updateFavorite(id) {
+      handelFavorites.toggleFavorite(id)
+      this.favoriteIdList = handelFavorites.storeFavorite()
+      this.$router.go(0)
     }
   },
   mounted() {
@@ -344,7 +357,6 @@ export default {
     }
   }
 }
-
 .accordion-button.collapsed {
   span {
     transform: rotate(0deg);
@@ -354,7 +366,6 @@ export default {
     }
   }
 }
-
 .info-card {
   p {
     &:first-child {
@@ -366,11 +377,9 @@ export default {
     }
   }
 }
-
 .nav-link {
   color: #8b8b8b;
 }
-
 .parameter-item {
   border: 2px solid #aaa;
 }
@@ -382,7 +391,6 @@ export default {
     font-size: 16px;
   }
 }
-
 .suggest {
   color: #aaa;
   font-size: 14px;

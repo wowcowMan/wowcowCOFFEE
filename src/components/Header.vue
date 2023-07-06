@@ -179,7 +179,7 @@ export default {
     },
     // 獲取收藏清單
     getFavorite() {
-      const storeFavorite = JSON.parse(localStorage.getItem('favorite'))
+      const storeFavorite = handelFavorites.storeFavorite()
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/products/all`
       this.favoriteStatus = true
       this.$http.get(url).then((response) => {

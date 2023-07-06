@@ -48,9 +48,9 @@
             </template>
           </tbody>
           <tfoot>
-            <tr>
+            <tr v-if="JSON.stringify(cart)!=='{}'">
               <td colspan="3" class="text-end">總計</td>
-              <td class="text-end">{{ $filters.currency(cart.total) }}</td>
+              <td class="text-end">{{ $filters.currency(cart.total)|| '' }}</td>
             </tr>
             <tr v-if="cart.final_total !== cart.total">
               <td colspan="3" class="text-end text-success">折扣價</td>
@@ -124,12 +124,6 @@ export default {
   components: { CheckoutModal },
   data() {
     return {
-      cart: {},
-      coupon_code: '',
-      isLoading: false,
-      status: {
-        loadingItem: '' // 對應品項 id
-      },
       form: {
         user: {
           name: '',

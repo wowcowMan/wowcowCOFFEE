@@ -17,7 +17,7 @@
           <span class="visually-hidden">Loading...</span>
         </div>
       </button>
-      <button type="button" class="btn btn-outline-light" :disabled="status.loadingItem === product.id"
+      <button type="button" class="btn btn-outline-light"
         :class="{ 'btn-light': favoriteIdList.includes(product.id) }" @click.stop="updateFavorite(product.id)">
         <i v-if="!favoriteIdList.includes(product.id)" class="fa-regular fa-heart"></i>
         <i v-if="favoriteIdList.includes(product.id)" class="fa-solid fa-heart text-warning"></i>
