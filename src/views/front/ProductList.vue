@@ -1,6 +1,6 @@
 <template>
   <Loading :active="isLoading"></Loading>
-  <div class="container-fluid mt-3 my-auto p-0">
+  <div class="container-fluid mt-3 my-auto">
     <div class="row justify-content-between align-items-center my-3">
       <div class="breadcrumb col-12 col-md-9 mb-2">
         <router-link class="me-2" to="/">首頁</router-link>/
