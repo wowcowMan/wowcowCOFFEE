@@ -26,18 +26,15 @@
               <p>即日起結帳時輸入wowcow即享9折優惠</p>
             </div>
           </div>
-          <div class="carousel-item">
+          <router-link to="/user/productlist/sale?page=1" target="_blank" class="carousel-item">
             <img
               src="https://images.unsplash.com/photo-1517668808822-9ebb02f2a0e6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2676&q=80"
               class="d-block w-100" alt="banner">
-            <div class="carousel-caption" @click.prevent="test">
+            <div class="carousel-caption">
               <h5>SALE</h5>
               <p>限量好豆特賣，要搶要快</p>
-              <!-- <router-link to="/user/productlist/sale?page=1">
-                搶購趣
-              </router-link> -->
             </div>
-          </div>
+          </router-link>
         </div>
       </div>
     </div>
@@ -205,9 +202,6 @@ export default {
       if (scrollTop > (this.$refs.areasWrap.offsetTop - 300)) {
         this.$refs.areasWrap.classList.add('show')
       }
-    },
-    test() {
-      this.$router.push({ path: 'user/productlist/sale?page=1' })
     }
   },
   mounted() {
@@ -246,6 +240,10 @@ export default {
     }
     p{
       font-size: 1rem;
+    }
+    a{
+      text-decoration: none;
+      color: #fff;
     }
   }
 

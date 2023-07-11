@@ -131,6 +131,7 @@ $dark_roast: #E13636;
   }
 
   .btn-group {
+    visibility: hidden;
     position: absolute;
     bottom: 5.5rem;
     left: 0.5rem;
@@ -162,6 +163,9 @@ $dark_roast: #E13636;
         display: block;
       }
     }
+    .btn-group {
+      visibility: visible;
+  }
   }
 }
 
