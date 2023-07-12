@@ -4,7 +4,7 @@
     <Header ref="header"></Header>
     <!-- banner -->
     <div class="container-fluid banner p-0 mt-0 mb-5">
-      <div id="myCarousel" class="carousel slide" data-bs-ride="carousel" ref="myCarousel">
+      <div id="myCarousel" class="carousel carousel-dark slide" data-bs-ride="carousel" ref="myCarousel">
         <div class="carousel-indicators">
           <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active" aria-current="true"
             aria-label="Slide 1"></button>
@@ -13,27 +13,16 @@
         </div>
         <div class="carousel-inner">
           <div class="carousel-item active">
-            <img src="https://images.unsplash.com/photo-1439242088854-0c76045f4124?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2670&q=80" class="d-block w-100" alt="banner">
-            <div class="carousel-caption">
-              <h5>wowcow<br>精品咖啡</h5>
-              <p>以覺得好喝的咖啡，就是好咖啡</p>
-            </div>
+            <img src="@/assets/banner01.png" class="d-block w-100" alt="banner">
+
           </div>
           <div class="carousel-item">
-            <img src="https://images.unsplash.com/photo-1535246785412-526b774dd1ef?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTU0fHxjb2ZmZWV8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60" class="d-block w-100" alt="banner">
-            <div class="carousel-caption">
-              <h5>優惠活動</h5>
-              <p>即日起結帳時輸入wowcow即享9折優惠</p>
-            </div>
+            <img src="@/assets/banner02.png" class="d-block w-100" alt="banner">
           </div>
           <router-link to="/user/productlist/sale?page=1" target="_blank" class="carousel-item">
             <img
-              src="https://images.unsplash.com/photo-1517668808822-9ebb02f2a0e6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2676&q=80"
+              src="@/assets/banner03.png"
               class="d-block w-100" alt="banner">
-            <div class="carousel-caption">
-              <h5>SALE</h5>
-              <p>限量好豆特賣，要搶要快</p>
-            </div>
           </router-link>
         </div>
       </div>

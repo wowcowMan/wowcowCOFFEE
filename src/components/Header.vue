@@ -5,7 +5,7 @@
         aria-controls="navbarOffcanvasLg">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <a class="navbar-brand" href="#"><strong>WowCow_Coffee</strong></a>
+      <h1 class="m-0"><a class="navbar-brand d-block" href="#">WowCow_Coffee</a></h1>
       <div class="offcanvas offcanvas-start p-4 p-lg-0" tabindex="-1" id="navbarOffcanvasLg"
         aria-labelledby="navbarOffcanvasLgLabel" ref="offcanvas">
         <div class="offcanvas-header">
@@ -234,6 +234,18 @@ export default {
   top: 0;
   box-shadow: 0 2px 5px rgba(0, 0, 0, .3);
   z-index: 15;
+  .navbar-brand,.offcanvas-title{
+    // border: 1px solid red;
+    width: 5rem;
+    height: 3rem;
+    background-image: url('../assets/wowcow_logo.svg');
+    background-repeat: no-repeat;
+    background-position: 0 center;
+    background-size: contain;
+    text-indent: 101%;
+    overflow: hidden;
+    line-height: 60px;
+  }
 
   .later-buy {
     a {
