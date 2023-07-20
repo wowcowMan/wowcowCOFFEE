@@ -72,7 +72,7 @@
     </div>
     <!-- 訂單表單 -->
     <div class="my-5 row justify-content-center">
-      <Form class="col" v-slot="{ errors }" @submit="this.$refs.checkout.showModal()">
+      <Form class="col" v-slot="{ errors }" @submit="checkout.showModal()">
         <div class="row">
           <div class="col-12 col-md-6">
             <div class="mb-3">
