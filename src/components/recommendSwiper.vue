@@ -17,15 +17,13 @@ export default {
     Swiper
   },
   setup() {
-    const perViewNum = ref(2)
+    const perViewNum = ref(3)
     const updateSlidesPerView = () => {
       const containerWidth = window.innerWidth
       if (containerWidth < 480) {
-        perViewNum.value = 2
+        perViewNum.value = 1
       } else if (containerWidth < 992 && containerWidth >= 768) {
         perViewNum.value = 3
-      } else if (containerWidth >= 992) {
-        perViewNum.value = 5
       }
     }
     onMounted(() => {

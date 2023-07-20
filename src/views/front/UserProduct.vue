@@ -42,12 +42,11 @@
                 <span></span><!-- 展開、收合符號 -->
               </button>
             </h2>
-            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
-              data-bs-parent="#accordionExample">
+            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
               <div class="accordion-body px-0">
                 <div class="info-card d-flex">
-                  <p class="me-3 p-3 rounded text-light">酸度：{{ this.infoContent.taste.acidity }}/5</p>
-                  <p class="p-3 rounded text-light">甜感：{{ this.infoContent.taste.sweetness }}/5</p>
+                  <p class="me-3 p-3 rounded text-light">酸度：{{ infoContent.taste.acidity }}/5</p>
+                  <p class="p-3 rounded text-light">甜感：{{ infoContent.taste.sweetness }}/5</p>
                 </div>
               </div>
             </div>
@@ -60,8 +59,7 @@
                 <span></span><!-- 展開、收合符號 -->
               </button>
             </h2>
-            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
-              data-bs-parent="#accordionExample">
+            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
               <div class="accordion-body px-0">
                 {{ infoContent.flavor }}
               </div>
@@ -71,21 +69,21 @@
         <!-- 加入購物車、收藏 -->
         <div class="row px-2 mb-5">
           <div class="col-4 d-flex align-item-center justify-content-between border border-1 border-black rounded-1">
-            <button type="button" class="btn border-0 btn-sm" @click.prevent="productNum--" :disabled="atLeast">-</button>
+            <button type="button" class="btn border-0 btn-sm" @click.prevent="productNum--" :disabled="productNum===1">-</button>
             <input v-model="productNum" type="numbet" class="p-1 border-0 col-6 text-center">
             <button type="button" class="btn btn-sm" @click.prevent="productNum++">+</button>
           </div>
           <div class="col-6 col-md-8 d-flex justify-content-between pe-0">
-            <button type="button" class="btn btn-dark" @click="addToCart(product.id, product.title)">
+            <button type="button" class="btn btn-dark" @click="addCart(product.id, product.title, productNum)">
               加到購物車
             </button>
             <button type="button" class="btn border-0 bg-white p-0 fs-5"
-            :class="{ 'btn-light': favoriteIdList.includes(product.id) }" @click.stop="updateFavorite(product.id)">
+              :class="{ 'btn-light': favoriteIdList.includes(product.id) }" @click.stop="toggleFavorite(product.id)">
               <i v-if="!favoriteIdList.includes(product.id)" class="fa-regular fa-heart"></i>
               <i v-if="favoriteIdList.includes(product.id)" class="fa-solid fa-heart text-warning"></i>
             </button>
           </div>
-          <span class="mt-3 p-0 text-secondary">* 代磨請備註沖煮器材</span>
+          <span v-if="product.category !== '選物'" class="mt-3 p-0 text-secondary">* 代磨請備註沖煮器材</span>
         </div>
       </div>
     </div>
@@ -161,127 +159,109 @@
         </viewed-swiper>
       </div>
     </div>
+
+    <!-- 推薦 -->
+    <div class="container p-0 mt-5">
+      <p class="text-center fs-3">推薦商品</p>
+      <div class="viewed-swiper">
+        <recommend-swiper class="border border-2">
+          <swiper-slide v-for="(item) in recommend" :key="item.id">
+            <product-card :product="item"></product-card>
+          </swiper-slide>
+        </recommend-swiper>
+      </div>
+    </div>
   </div>
 </template>
 
-<script>
-import ViewedSwiper from '@/components/ViewedSwiper.vue'
+<script setup>
+import { ref, computed, watch, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import { storeToRefs } from 'pinia'
+import { useProductsStore } from '@/stores/productsStore'
+import { useCartStore } from '@/stores/cartStore'
+import { useFavoriteStore } from '@/stores/favoriteStore'
+import axios from 'axios'
 import { SwiperSlide } from 'swiper/vue'
+import ViewedSwiper from '@/components/ViewedSwiper.vue'
+import recommendSwiper from '@/components/recommendSwiper.vue'
 import ProductCard from '@/components/ProductCard.vue'
-import handelFavorites from '@/methods/favorite'
-export default {
-  components: {
-    ViewedSwiper, SwiperSlide, ProductCard
+const route = useRoute()
+
+const productsStore = useProductsStore()
+const { getAllDatas, getViewed, randomList } = productsStore
+const { allDatas, viewedList, recommend } = storeToRefs(productsStore)
+
+// 引入cartStore的function、data
+const cartStore = useCartStore()
+const { addCart } = cartStore
+const { isLoading, productNum } = storeToRefs(cartStore)
+
+// 引入favoriteStore的function、data
+const favoriteStore = useFavoriteStore()
+const { toggleFavorite } = favoriteStore
+const { favoriteIdList } = storeToRefs(favoriteStore)
+
+const id = computed(() => {
+  return route.params.productId
+})
+
+const product = ref({})
+const infoContent = ref({
+  taste: {
+    acidity: '',
+    sweetness: ''
   },
-  data() {
-    return {
-      isLoading: false,
-      product: {},
-      activePic: '',
-      infoContent: {
-        taste: {
-          acidity: '',
-          sweetness: ''
-        },
-        flavor: '',
-        strategy: {
-          temperature: '',
-          dripper: '',
-          amount: '',
-          fine: '',
-          pour: ''
-        }
-      },
-      productNum: 1,
-      atLeast: true,
-      activeButton: 'description',
-      viewedList: [],
-      favoriteIdList: handelFavorites.storeFavorite()
-    }
-  },
-  watch: {
-    productNum() {
-      if (this.productNum <= 1) {
-        this.productNum = 1
-        this.atLeast = true
-      } else {
-        this.atLeast = false
-      }
-    },
-    id() {
-      this.getProduct()
-    }
-  },
-  computed: {
-    id() {
-      return this.$route.params.productId
-    }
-  },
-  methods: {
-    getProduct() {
-      const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/product/${this.id}`
-      this.isLoading = true
-      this.$http.get(api).then((response) => {
-        // console.log(response.data)
-        this.isLoading = false
-        if (response.data.success) {
-          this.product = response.data.product
-          this.favoriteIdList = handelFavorites.storeFavorite()
-          this.activePic = this.product.imageUrl
-          if (this.product.category !== '選物') {
-            this.infoContent = JSON.parse(this.product.content)
-          }
-        }
-      })
-    },
-    addToCart(id, title) {
-      this.isLoading = true
-      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`
-      const cart = {
-        product_id: id,
-        qty: this.productNum
-      }
-      this.isLoading = true
-      this.$http.post(url, { data: cart }).then((response) => {
-        if (response.data.success) {
-          this.isLoading = false
-          this.productNum = 1
-          this.$swal({
-            icon: 'success',
-            text: title,
-            title: '以成功加入購物車'
-          })
-        }
-      })
-    },
-    changePic(url) {
-      this.activePic = url
-    },
-    tabClick(btn) {
-      this.activeButton = btn
-    },
-    getViewed() {
-      const storeViewed = JSON.parse(localStorage.getItem('viewed'))
-      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/products/all`
-      this.$http.get(url).then((response) => {
-        if (response.data.success) {
-          this.viewedList = response.data.products.filter((item) => storeViewed.includes(item.id)).sort((a, b) => {
-            return storeViewed.indexOf(a.id) - storeViewed.indexOf(b.id)
-          })
-        }
-      })
-    },
-    updateFavorite(id) {
-      handelFavorites.toggleFavorite(id)
-      this.favoriteIdList = handelFavorites.storeFavorite()
-      this.$router.go(0)
-    }
-  },
-  mounted() {
-    this.getProduct()
-    this.getViewed()
+  flavor: '',
+  strategy: {
+    temperature: '',
+    dripper: '',
+    amount: '',
+    fine: '',
+    pour: ''
   }
+})
+const getProduct = () => {
+  const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/product/${id.value}`
+  isLoading.value = true
+  axios.get(api).then((response) => {
+    isLoading.value = false
+    if (response.data.success) {
+      product.value = response.data.product
+      activePic.value = product.value.imageUrl
+      if (product.value.category !== '選物') {
+        infoContent.value = JSON.parse(product.value.content)
+      }
+    }
+  })
 }
+
+// 圖片切換
+const activePic = ref('')
+const changePic = (url) => {
+  activePic.value = url
+}
+
+// navtab切換
+const activeButton = ref('description')
+const tabClick = (btn) => {
+  activeButton.value = btn
+}
+
+// 點擊其他商品卡觸發
+watch(() => id.value, () => {
+  getProduct()
+})
+
+onMounted(() => {
+  getProduct()
+  if (allDatas.value.length === 0) {
+    getAllDatas()
+  } else {
+    getViewed()
+    randomList(allDatas.value)
+  }
+})
 </script>
 
 <style scoped lang="scss">
@@ -315,7 +295,7 @@ export default {
   overflow: hidden;
 }
 
-.sale-price{
+.sale-price {
   color: #e31d1d;
 }
 
@@ -357,6 +337,7 @@ export default {
     }
   }
 }
+
 .accordion-button.collapsed {
   span {
     transform: rotate(0deg);
@@ -366,6 +347,7 @@ export default {
     }
   }
 }
+
 .info-card {
   p {
     &:first-child {
@@ -377,9 +359,11 @@ export default {
     }
   }
 }
+
 .nav-link {
   color: #8b8b8b;
 }
+
 .parameter-item {
   border: 2px solid #aaa;
 }
@@ -391,8 +375,8 @@ export default {
     font-size: 16px;
   }
 }
+
 .suggest {
   color: #aaa;
   font-size: 14px;
-}
-</style>
+}</style>

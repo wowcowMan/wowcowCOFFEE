@@ -40,23 +40,19 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { onMounted } from 'vue'
 import Collapse from 'bootstrap/js/dist/collapse'
-export default {
-  data() {
-    return {
-      collapseList: []
-    }
-  },
-  mounted() {
-    const collapseElementList = [].slice.call(document.querySelectorAll('.collapse'))
-    this.collapseList = collapseElementList.map(function(collapseEl) {
-      return new Collapse(collapseEl, {
-        toggle: false
-      })
+const collapseList = []
+onMounted(() => {
+  const collapseElementList = [].slice.call(document.querySelectorAll('.collapse'))
+  collapseList.value = collapseElementList.map(function(collapseEl) {
+    return new Collapse(collapseEl, {
+      toggle: false
     })
-  }
-}
+  })
+})
+
 </script>
 
 <style scoped lang="scss">

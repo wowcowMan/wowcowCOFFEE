@@ -4,22 +4,17 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, inject, onMounted } from 'vue'
 import Toast from '@/components/Toast.vue'
-export default {
-  components: { Toast },
-  data() {
-    return {
-      messages: []
-    }
-  },
-  inject: ['emitter'],
-  mounted() {
-    // 接收來自Products的emit並觸發函式
-    this.emitter.on('push-message', (message) => {
-      const { style = 'success', title, content } = message
-      this.messages.push({ style, title, content })
-    })
-  }
-}
+const messages = ref([])
+const emitter = inject('emitter')
+
+onMounted(() => {
+  // 接收來自Products的emit並觸發函式
+  emitter.on('push-message', (message) => {
+    const { style = 'success', title, content } = message
+    messages.value.push({ style, title, content })
+  })
+})
 </script>

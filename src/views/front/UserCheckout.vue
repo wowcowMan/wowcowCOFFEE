@@ -26,6 +26,10 @@
       <table class="table">
         <tbody>
           <tr>
+            <th width="100">訂單編號</th>
+            <td>{{ orderId }}</td>
+          </tr>
+          <tr>
             <th width="100">Email</th>
             <td>{{ order.user.email }}</td>
           </tr>
@@ -51,51 +55,53 @@
         </tbody>
       </table>
       <div class="text-end" v-if="order.is_paid === false">
-        <button class="btn btn-danger">確認付款去</button>
+        <button class="btn btn-outline-danger">確認付款去</button>
       </div>
     </form>
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      order: {
-        user: {}
-      },
-      orderId: '',
-      isLoading: false
-    }
-  },
-  methods: {
-    getOrder() {
-      this.isLoading = true
-      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/order/${this.orderId}`
-      this.$http.get(url)
-        .then((res) => {
-          if (res.data.success) {
-            this.isLoading = false
-            this.order = res.data.order
-            // console.log(this.order)
-          }
-        })
-    },
-    payOrder() {
-      this.isLoading = true
-      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/pay/${this.orderId}`
-      this.$http.post(url)
-        .then((res) => {
-          // console.log(res)
-          if (res.data.success) {
-            this.getOrder()
-          }
-        })
-    }
-  },
-  created() {
-    this.orderId = this.$route.params.orderId
-    this.getOrder()
-  }
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import axios from 'axios'
+import { useCartStore } from '@/stores/cartStore'
+const cartStore = useCartStore()
+const { getCart } = cartStore
+
+const order = ref({
+  user: {}
+})
+const orderId = ref('')
+const isLoading = ref(false)
+
+const getOrder = () => {
+  isLoading.value = true
+  const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/order/${orderId.value}`
+  axios.get(url)
+    .then((res) => {
+      if (res.data.success) {
+        order.value = res.data.order
+        getCart()
+        isLoading.value = false
+      }
+    })
 }
+
+const payOrder = () => {
+  isLoading.value = true
+  const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/pay/${orderId.value}`
+  axios.post(url)
+    .then((res) => {
+      if (res.data.success) {
+        getOrder()
+      }
+    })
+}
+
+const route = useRoute()
+onMounted(() => {
+  orderId.value = route.params.orderId
+  getOrder()
+})
 </script>

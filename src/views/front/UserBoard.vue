@@ -13,38 +13,25 @@
   <Footer></Footer>
 </template>
 
-<script>
+<script setup>
+import { ref, provide, onMounted } from 'vue'
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
-import emitter from '@/methods/emitter'
 import ToastMessages from '@/components/ToastMessages.vue'
-import Toast from 'bootstrap/js/dist/toast'
-export default {
-  components: {
-    Header, Footer, ToastMessages
-  },
-  data() {
-    return {
-      toastList: []
-    }
-  },
-  provide() {
-    return {
-      emitter
-    }
-  },
-  mounted() {
-    const toastEl = this.$refs.toast
-    const toast = new Toast(toastEl)
-    toast.show()
-  }
-}
+import emitter from '@/methods/emitter'
+import Toast from 'bootstrap/js/dist/toast.js'
+
+provide('emitter', emitter)
+
+const toast = ref(null)
+onMounted(() => {
+  const toastEl = toast.value
+  const toastComponent = new Toast(toastEl)
+  toastComponent.show()
+})
 </script>
 
 <style scoped lang="scss">
-.navbar {
-  position: static;
-}
 .toast-header{
   background: #E13636;
 }

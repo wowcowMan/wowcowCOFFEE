@@ -29,26 +29,18 @@
   <Footer></Footer>
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue'
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
 import MsgModal from '@/components/MsgModal.vue'
-export default {
-  components: {
-    Header, Footer, MsgModal
+const form = ref({
+  user: {
+    name: '',
+    email: ''
   },
-  data() {
-    return {
-      form: {
-        user: {
-          name: '',
-          email: ''
-        },
-        message: ''
-      }
-    }
-  }
-}
+  message: ''
+})
 </script>
 
 <style scoped lang="scss">

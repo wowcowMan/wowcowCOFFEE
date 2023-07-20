@@ -12,6 +12,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css'
 
 import App from './App.vue'
 import router from './router'
+import { createPinia } from 'pinia'
 
 import { currency, date } from './methods/filters'
 import $httpMessageState from './methods/pushMessageState'
@@ -27,6 +28,7 @@ import VueSweetalert2 from 'vue-sweetalert2'
 
 // createApp(App).use(router).mount('#app')
 const app = createApp(App)
+const pinia = createPinia()
 app.config.globalProperties.$filters = {
   date, currency
 }
@@ -47,6 +49,8 @@ app.config.globalProperties.$httpMessageState = $httpMessageState
 app.use(VueAxios, axios)
 app.use(router)
 app.use(VueSweetalert2)
+
+app.use(pinia)
 
 // 採用全域註冊，任何地方都有可能用到
 app.component('Loading', Loading)

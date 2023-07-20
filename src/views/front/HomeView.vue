@@ -1,10 +1,10 @@
 <template>
-    <Loading :active="isLoading"></Loading>
+  <Loading :active="productsStore.isLoading"></Loading>
+  <Header ref="header"></Header>
   <div class="home">
-    <Header ref="header"></Header>
     <!-- banner -->
     <div class="container-fluid banner p-0 mt-0 mb-5">
-      <div id="myCarousel" class="carousel carousel-dark slide" data-bs-ride="carousel" ref="myCarousel">
+      <div id="myCarousel" class="carousel carousel-dark slide" data-bs-ride="carousel" ref="bannerCarousel">
         <div class="carousel-indicators">
           <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active" aria-current="true"
             aria-label="Slide 1"></button>
@@ -20,9 +20,7 @@
             <img src="@/assets/banner02.png" class="d-block w-100" alt="banner">
           </div>
           <router-link to="/user/productlist/sale?page=1" target="_blank" class="carousel-item">
-            <img
-              src="@/assets/banner03.png"
-              class="d-block w-100" alt="banner">
+            <img src="@/assets/banner03.png" class="d-block w-100" alt="banner">
           </router-link>
         </div>
       </div>
@@ -57,12 +55,12 @@
       <p class="text-center w-75 fw-bold mx-auto mb-5">
         我們不只是尋找最好的咖啡豆，更是探索每個產地、每個農民的故事。我們與全球咖啡種植者建立了長期合作關係，確保他們的辛勤耕耘和專業知識在每一杯咖啡中得以體現。</p>
       <div class="areas-wrap mb-3" ref="areasWrap">
-        <div v-for="(area, key) in areaData" :key="key" class="area-item d-block d-md-flex"
+        <div v-for="(area, key) in areasData" :key="key" class="area-item d-block d-md-flex"
           :class="{ 'flex-row-reverse': area.name === '中南美洲' }">
           <div class="area-info position-relative d-flex align-items-center col col-md-6 m-0 px-1 py-4"
             :class="{ 'flex-row-reverse': area.name === '中南美洲' }">
             <p class="continent-name text-center text-light fs-5 fw-bold">{{ area.name }}產區</p>
-            <p class="continent-info col p-3 bg-light fs-6">{{ area.info }}</p>
+            <p class="continent-info col-9 p-3 bg-light fs-6">{{ area.info }}</p>
           </div>
           <div class="product col col-md-6 p-0 p-md-3 bg-white">
             <card-swiper>
@@ -133,76 +131,42 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted, onUnmounted } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useProductsStore } from '@/stores/productsStore'
+import { SwiperSlide } from 'swiper/vue'
+
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
 import Carousel from 'bootstrap/js/dist/carousel'
 import CardSwiper from '@/components/CardSwiper.vue'
-import { SwiperSlide } from 'swiper/vue'
 import ProductCard from '@/components/ProductCard.vue'
 
-export default {
-  name: 'HomeView',
-  components: {
-    Header, Footer, CardSwiper, SwiperSlide, ProductCard
-  },
-  data() {
-    return {
-      areaData: [
-        {
-          name: '非洲',
-          info: '非洲產區擁有多個優質的咖啡產區。風味通常具有明亮的酸度和清新的口感，並帶有豐富的水果風味。衣索比亞的咖啡具有花香和柑橘風味，肯亞的咖啡則以複雜的莓果風味著稱。',
-          products: []
-        },
-        {
-          name: '中南美洲',
-          info: '中南美洲的咖啡豆通常具有平衡的風味和濃郁的口感。哥斯達黎加的咖啡常帶有柔和的酸度和堅果風味，現今哥倫比亞有許多特殊處理法，其咖啡有豐富且濃烈的香氣，巴拿馬則以高品質的藝伎咖啡計聞名。',
-          products: []
-        },
-        {
-          name: '亞洲',
-          info: '亞洲的咖啡產區包括印尼和越南等地。亞洲咖啡豆的風味特點較為多樣。常常具有濃郁的風味和重口感，並帶有香料和木質的風味。而台灣咖啡近年發展迅速，提供高品質且改善原本亞洲豆原本不討喜的風味，並有著花香、果香等風味。',
-          products: []
-        }
-      ],
-      isLoading: false,
-      carousel: {}
-    }
-  },
-  methods: {
-    getProducts() {
-      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/products/all`
-      this.isLoading = true
-      this.$http.get(url).then((response) => {
-        if (response.data.success) {
-          const data = response.data.products.reverse()
-          for (let i = 0; i < this.areaData.length; i++) {
-            this.areaData[i].products = data.filter((item) => {
-              return item.category.includes(this.areaData[i].name)
-            }).slice(0, 3)
-          }
-          this.isLoading = false
-        }
-      })
-    },
-    handleScroll() {
-      const scrollTop = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop
-      this.$refs.header.navFixed()
-      if (scrollTop > (this.$refs.areasWrap.offsetTop - 300)) {
-        this.$refs.areasWrap.classList.add('show')
-      }
-    }
-  },
-  mounted() {
-    this.getProducts()
-    window.addEventListener('scroll', this.handleScroll)
-    const myCarousel = this.$refs.myCarousel
-    this.carousel = new Carousel(myCarousel)
-  },
-  unmounted() {
-    window.removeEventListener('scroll', this.handleScroll)
+const productsStore = useProductsStore()
+const { areasData } = storeToRefs(productsStore)
+
+const header = ref(null)
+const areasWrap = ref(null)
+const handleScroll = () => {
+  const scrollTop = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop
+  if (scrollTop > (areasWrap.value.offsetTop - 300)) {
+    areasWrap.value.classList.add('show')
   }
 }
+
+const carousel = {}
+const bannerCarousel = ref(null)
+onMounted(() => {
+  productsStore.getAllDatas()
+  window.addEventListener('scroll', handleScroll)
+  const myCarousel = bannerCarousel.value
+  carousel.value = new Carousel(myCarousel)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll)
+})
 </script>
 
 <style scoped lang="scss">
@@ -224,13 +188,15 @@ export default {
   }
 
   .carousel-caption {
-    h5{
+    h5 {
       font-size: 3rem;
     }
-    p{
+
+    p {
       font-size: 1rem;
     }
-    a{
+
+    a {
       text-decoration: none;
       color: #fff;
     }
@@ -507,4 +473,5 @@ export default {
 
 .footer {
   margin-top: 150px;
-}</style>
+}
+</style>

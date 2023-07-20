@@ -18,7 +18,7 @@
         </div>
       </button>
       <button type="button" class="btn btn-outline-light"
-        :class="{ 'btn-light': favoriteIdList.includes(product.id) }" @click.stop="updateFavorite(product.id)">
+        :class="{ 'btn-light': favoriteIdList.includes(product.id) }" @click.stop="toggleFavorite(product.id)">
         <i v-if="!favoriteIdList.includes(product.id)" class="fa-regular fa-heart"></i>
         <i v-if="favoriteIdList.includes(product.id)" class="fa-solid fa-heart text-warning"></i>
       </button>
@@ -26,55 +26,43 @@
   </div>
 </template>
 
-<script>
-import handelFavorites from '@/methods/favorite'
-export default {
-  props: ['product'],
-  data() {
-    return {
-      status: {
-        loadingItem: '' // 對應品項 id
-      },
-      favoriteIdList: handelFavorites.storeFavorite()
-    }
-  },
-  methods: {
-    getProduct(id) {
-      this.saveViewed(id)
-      this.$router.push(`/user/product/${id}`)
-    },
-    addCart(id, title) {
-      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`
-      this.status.loadingItem = id
-      const cart = {
-        product_id: id,
-        qty: 1
-      }
-      this.$http.post(url, { data: cart })
-        .then((res) => {
-          this.status.loadingItem = ''
-          this.$swal({
-            icon: 'success',
-            text: title,
-            title: '以成功加入購物車'
-          })
-        })
-    },
-    updateFavorite(id) {
-      handelFavorites.toggleFavorite(id)
-      this.favoriteIdList = handelFavorites.storeFavorite()
-    },
-    saveViewed(id) {
-      const viewedArray = localStorage.getItem('viewed') ? JSON.parse(localStorage.getItem('viewed')) : []
-      if (!viewedArray.includes(id)) {
-        viewedArray.unshift(id)
-      }
-      if (viewedArray.length > 5) {
-        viewedArray.pop()
-      }
-      localStorage.setItem('viewed', JSON.stringify(viewedArray))
-    }
+<script setup>
+import { defineProps } from 'vue'
+import { useRouter } from 'vue-router'
+import { storeToRefs } from 'pinia'
+import { useCartStore } from '@/stores/cartStore'
+import { useFavoriteStore } from '@/stores/favoriteStore'
+const router = useRouter()
+
+// eslint-disable-next-line no-unused-vars
+const props = defineProps({
+  product: Object
+})
+
+// 引入cartStore的function、data
+const cartStore = useCartStore()
+const { addCart } = cartStore
+const { status } = storeToRefs(cartStore)
+
+// 引入favoriteStore的function、data
+const favoriteStore = useFavoriteStore()
+const { toggleFavorite } = favoriteStore
+const { favoriteIdList } = storeToRefs(favoriteStore)
+
+// 曾經看過
+const saveViewed = (id) => {
+  const viewedArray = localStorage.getItem('viewed') ? JSON.parse(localStorage.getItem('viewed')) : []
+  if (!viewedArray.includes(id)) {
+    viewedArray.unshift(id)
   }
+  if (viewedArray.length > 5) {
+    viewedArray.pop()
+  }
+  localStorage.setItem('viewed', JSON.stringify(viewedArray))
+}
+const getProduct = (id) => {
+  saveViewed(id)
+  router.push(`/user/product/${id}`)
 }
 </script>
 

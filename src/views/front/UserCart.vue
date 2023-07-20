@@ -37,7 +37,7 @@
                 <td>
                   <div class="input-group input-group-sm">
                     <input type="number" class="form-control" v-model.number="item.qty" min='1' @change="updateCart(item)"
-                      :disabled="this.status.loadingItem === item.id">
+                      :disabled="status.loadingItem === item.id">
                   </div>
                 </td>
                 <td class="text-end">
@@ -60,7 +60,7 @@
         </table>
         <div class="col-md-4 ms-auto">
           <div class="input-group mb-3 input-group-sm w-auto">
-            <input type="text" class="form-control" v-model="coupon_code" placeholder="請輸入優惠碼">
+            <input type="text" class="form-control text-center" v-model="couponCode" placeholder="請輸入優惠碼">
             <div class="input-group-append">
               <button class="btn btn-outline-secondary" type="button" @click="addCouponCode">
                 套用優惠碼
@@ -103,7 +103,7 @@
           <div class="col-12 col-md-6">
             <div class="mb-3">
               <label for="message" class="form-label">留言</label>
-              <textarea name="" id="message" class="form-control" cols="30" rows="10" v-model="form.message"></textarea>
+              <textarea name="" id="message" class="form-control" cols="30" rows="10" v-model="form.message" placeholder="要研磨請備著沖煮器材"></textarea>
             </div>
             <div class="text-center text-md-end">
               <button class="btn btn-dark">下一步</button>
@@ -116,54 +116,61 @@
   <CheckoutModal :form="form" @createOrder="createOrder" ref="checkout"></CheckoutModal>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import axios from 'axios'
 import CheckoutModal from '@/components/CheckoutModal.vue'
-import cartMixin from '@/mixins/cartMixin'
-// import modalMixin from '@/mixins/modalMixin'
-export default {
-  components: { CheckoutModal },
-  data() {
-    return {
-      form: {
-        user: {
-          name: '',
-          email: '',
-          tel: '',
-          address: ''
-        },
-        message: ''
-      }
-    }
+import { storeToRefs } from 'pinia'
+import { useCartStore } from '@/stores/cartStore'
+import $httpMessageState from '@/methods/pushMessageState'
+
+// 引入cartStore的function、data
+const cartStore = useCartStore()
+const { getCart, updateCart, removeCartItem } = cartStore
+const { isLoading, cart, status } = storeToRefs(cartStore)
+
+const form = ref({
+  user: {
+    name: '',
+    email: '',
+    tel: '',
+    address: ''
   },
-  mixins: [cartMixin],
-  methods: {
-    addCouponCode() {
-      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/coupon`
-      const coupon = {
-        code: this.coupon_code
-      }
-      this.isLoading = true
-      this.$http.post(url, { data: coupon }).then((response) => {
-        this.$httpMessageState(response, '加入優惠券')
-        this.getCart()
-        this.isLoading = false
-      })
-    },
-    createOrder() {
-      this.isLoading = true
-      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/order`
-      const order = this.form
-      this.$http.post(url, { data: order })
-        .then((res) => {
-          // console.log(res)
-          this.$refs.checkout.hideModal()
-          this.isLoading = false
-          this.$router.push(`/user/checkout/${res.data.orderId}`)
-        })
-    }
-  },
-  created() {
-    this.getCart()
+  message: ''
+})
+
+// 使用優惠券
+const couponCode = ref('')
+const addCouponCode = () => {
+  const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/coupon`
+  const coupon = {
+    code: couponCode.value
   }
+  isLoading.value = true
+  axios.post(url, { data: coupon }).then((response) => {
+    $httpMessageState(response, '加入優惠券')
+    getCart()
+    isLoading.value = false
+  })
 }
+
+// 訂單建立
+const router = useRouter()
+const checkout = ref(null)
+const createOrder = () => {
+  isLoading.value = true
+  const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/order`
+  const order = form.value
+  axios.post(url, { data: order })
+    .then((res) => {
+      checkout.value.hideModal()
+      isLoading.value = false
+      router.push(`/user/checkout/${res.data.orderId}`)
+    })
+}
+
+onMounted(() => {
+  getCart()
+})
 </script>
