@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar navbar-light navbar-expand-lg bg-light w-100" ref="nav">
     <div class="container justify-content-start" style="width: 100%; max-width: 1280px;">
-      <button class="navbar-toggler me-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#navbarOffcanvasLg"
+      <button class="navbar-toggler border-0 me-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#navbarOffcanvasLg"
         aria-controls="navbarOffcanvasLg">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -15,7 +15,6 @@
         <div class="offcanvas-body">
           <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
             <li class="nav-item my-0 my-lg-2">
-              <!-- <a class="nav-link" aria-current="page" href="#" data-content="首頁" @click="closeNav">首頁</a> -->
               <router-link class="nav-link" to="/" data-content="首頁" @click="closeNav">首頁</router-link>
             </li>
             <li class="nav-item my-0 my-lg-2">
@@ -176,13 +175,13 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
-import { useRoute } from 'vue-router'
+// import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useCartStore } from '@/stores/cartStore'
 import { useFavoriteStore } from '@/stores/favoriteStore'
 import Offcanvas from 'bootstrap/js/dist/offcanvas'
 import Collapse from 'bootstrap/js/dist/collapse'
-const route = useRoute()
+// const route = useRoute()
 
 // 引入cartStore的function、data
 const cartStore = useCartStore()
@@ -225,9 +224,9 @@ const collapseList = []
 onMounted(() => {
   getCart()
   getFavorite()
-  if (route.path === '/') {
-    window.addEventListener('scroll', navFixed)
-  }
+  // if (route.path === '/') {
+  // }
+  window.addEventListener('scroll', navFixed)
 
   const offcanvasElementList = [].slice.call(document.querySelectorAll('.offcanvas'))
   offcanvasList.value = offcanvasElementList.map(function(offcanvasEl) {
@@ -279,29 +278,33 @@ onUnmounted(() => {
   .offcanvas-body{
     .nav-item{
       overflow: hidden;
-      // border: 1px solid red;
       .nav-link{
         position: relative;
         margin-right: 0.5rem;
         padding: 0.5rem 0.5rem;
-        transition: translate .3s ease-out;
         &::before{
-          content: attr(data-content);
+          content: '';
           position: absolute;
-          bottom: -100%;
-          left: 0rem;
-          width: 100%;
-          padding: 0.5rem 0.5rem;
+          display: block;
+          height: 2px;
+          bottom: 0;
+          left: 50%;
+          right: 50%;
           background: #212529;
-          border-radius: 0.3rem;
-          color: aliceblue;
+          transition: all .3s ease-out;
         }
         &:hover{
-          translate: 0px -100%;
+          &::before{
+            left: 0%;
+            right: 0%;
+          }
         }
       }
       .nav-link.active{
-        translate: 0px -100%;
+        &::before{
+          left: 0%;
+          right: 0%;
+        }
       }
     }
   }

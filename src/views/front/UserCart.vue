@@ -11,14 +11,6 @@
     <div class="col">
       <div class="sticky-top">
         <table class="table align-middle">
-          <thead>
-            <tr>
-              <th></th>
-              <th>品名</th>
-              <th style="width: 15%">數量</th>
-              <th>單價</th>
-            </tr>
-          </thead>
           <tbody>
             <template v-if="cart.carts">
               <tr v-for="item in cart.carts" :key="item.id">
