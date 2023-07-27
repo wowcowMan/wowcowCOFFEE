@@ -291,12 +291,12 @@ onUnmounted(() => {
           left: 50%;
           right: 50%;
           background: #212529;
-          transition: all .3s ease-out;
         }
         &:hover{
           &::before{
             left: 0%;
             right: 0%;
+            transition: all .3s ease-out;
           }
         }
       }

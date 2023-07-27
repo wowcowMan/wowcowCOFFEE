@@ -75,21 +75,21 @@
             </div>
             <div class="mb-3">
               <label for="name" class="form-label">收件人姓名</label>
-              <Field id="name" name="姓名" type="text" class="form-control" :class="{ 'is-invalid': errors['姓名'] }"
+              <Field id="name" name="name" label="姓名" type="text" class="form-control" :class="{ 'is-invalid': errors['name'] }"
                 placeholder="請輸入姓名" rules="required" v-model="form.user.name"></Field>
-              <ErrorMessage name="姓名" class="invalid-feedback"></ErrorMessage>
+              <ErrorMessage name="name" class="invalid-feedback"></ErrorMessage>
             </div>
             <div class="mb-3">
               <label for="tel" class="form-label">收件人電話</label>
-              <Field id="tel" name="電話" type="tel" class="form-control" :class="{ 'is-invalid': errors['電話'] }"
+              <Field id="tel" name="phone" label="電話" type="tel" class="form-control" :class="{ 'is-invalid': errors['phone'] }"
                 placeholder="請輸入電話" rules="required" v-model="form.user.tel"></Field>
-              <ErrorMessage name="電話" class="invalid-feedback"></ErrorMessage>
+              <ErrorMessage name="phone" class="invalid-feedback"></ErrorMessage>
             </div>
             <div class="mb-3">
               <label for="address" class="form-label">收件人地址</label>
-              <Field id="address" name="地址" type="text" class="form-control" :class="{ 'is-invalid': errors['地址'] }"
+              <Field id="address" name="address" label="地址" type="text" class="form-control" :class="{ 'is-invalid': errors['address'] }"
                 placeholder="請輸入地址" rules="required" v-model="form.user.address"></Field>
-              <ErrorMessage name="地址" class="invalid-feedback"></ErrorMessage>
+              <ErrorMessage name="address" class="invalid-feedback"></ErrorMessage>
             </div>
           </div>
           <div class="col-12 col-md-6">
